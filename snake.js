@@ -21,18 +21,21 @@
     console.log(clearArea)                   //it works
     console.log(initialArea !== clearArea)   //it works because it says: true! (so it copy a old area but without references!!!! (changing area not changing a initialArea))
 
-    var initialHeadSnakePosition = {
-        whatRow: 7,
-        whatColumn: 7,
+
+    class initialPosition {
+        constructor(whatRow, whatColumn) {
+            this.whatRow = whatRow;
+            this.whatColumn = whatColumn;
+        }
     }
 
-    var initialBodySnakePosition = {
-        whatRow:
-        whatColumn
-    }
-    var headSnakePosition
+    var initialPositionSnakeHead = new initialPosition(6,6)
+    var initialPositionSnakeBody1 = new initialPosition(7,6)
+    var initialPositionSnakeBody2 = new initialPosition(8,6)
+    var initialPositionFood = new initialPosition(3,3)
 
-    var initialfoodPosition
+    console.log(initialPositionSnakeHead)
+
     var foodPosition
 
     var time
@@ -90,17 +93,30 @@
 
     function addToAreaSnakeAndFood () {
 
-        clearArea 
+        clearArea = JSON.parse(JSON.stringify(initialArea))    //is this declaration is necessary? this is also in top 
 
-        clearArea[initialHeadSnakePosition.whatRow][initialHeadSnakePosition.whatColumn] = 'H'
+        clearArea[initialPositionSnakeHead.whatRow][initialPositionSnakeHead.whatColumn] = 'H'
 
-        clearArea[][] = '1'
-        clearArea[][] = 'F'
+        clearArea[initialPositionSnakeBody1.whatRow][initialPositionSnakeBody1.whatColumn] = '1'
+        clearArea[initialPositionSnakeBody2.whatRow][initialPositionSnakeBody2.whatColumn] = '1'
 
+        clearArea[initialPositionFood.whatRow][initialPositionFood.whatColumn] = 'F'
 
     }
 
     console.log(addToAreaSnakeAndFood())
+    console.log(clearArea)   //it works the clear area have changed and added H, F, 1, 1 :) 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -138,5 +154,11 @@
 
     // START GAME
     // document.body is an example of the container for the game
+
+
+
+
+
+    
     init(document.body)
 })()
