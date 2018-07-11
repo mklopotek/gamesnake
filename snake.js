@@ -1,7 +1,7 @@
 
 (function () {
 
-//"GLOBAL" VARIABLES
+    //"GLOBAL" VARIABLES
 
     //this two variable are the number of rows (areaLengthX) and the number of columns (areaLenghtY)
     var areaRowsLengthX = 10
@@ -22,36 +22,34 @@
     console.log(initialArea !== clearArea)   //it works because it says: true! (so it copy a old area but without references!!!! (changing area not changing a initialArea))
 
 
-    class initialPosition {
-        constructor(whatRow, whatColumn) {
-            this.whatRow = whatRow;
-            this.whatColumn = whatColumn;
-        }
-    }
+    const initialPosition = (whatRow, whatColumn) => ({
+        whatRow: whatRow,
+        whatColumn: whatColumn
+    })
 
-    var initialPositionSnakeHead = new initialPosition(6,6)
-    var initialPositionSnakeBody1 = new initialPosition(7,6)
-    var initialPositionSnakeBody2 = new initialPosition(8,6)
-    var initialPositionFood = new initialPosition(3,3)
+    var initialPositionSnakeHead = initialPosition(6, 6)
+    var initialPositionSnakeBody1 = initialPosition(7, 6)
+    var initialPositionSnakeBody2 = initialPosition(8, 6)
+    var initialPositionFood = initialPosition(3, 3)
 
     console.log(initialPositionSnakeHead)
 
     var foodPosition
 
     var time
-    var score 
+    var score
 
-    var gameInterval 
+    var gameInterval
 
     //this function create clear area
 
-    function createClearArea(areaRowsLengthX, areaColumnsLengthY){
-        return Array(areaRowsLengthX).fill(0).map(function(element, index, array){
+    function createClearArea(areaRowsLengthX, areaColumnsLengthY) {
+        return Array(areaRowsLengthX).fill(0).map(function (element, index, array) {
             return Array(areaColumnsLengthY).fill(0)
         })
     }
 
-    console.log(createClearArea(12,3))     //it works
+    console.log(createClearArea(12, 3))     //it works
 
     function init(container) {
         prepareLayout(container)
@@ -60,8 +58,8 @@
         // where game should be rendered, eg it can be body of document
         // this function should render first frame of game and set all
         // of the variables like time to game end that werent predefinied
-    } 
-    
+    }
+
     function prepareLayout(container) {
 
         gameContainer = document.createElement('div')
@@ -76,9 +74,9 @@
     //this function will be transform the table from js to HTML 
     function render() {
 
-    gameContainer.innerHTML = ''
+        gameContainer.innerHTML = ''
 
-    
+
 
 
 
@@ -91,7 +89,7 @@
 
 
 
-    function addToAreaSnakeAndFood () {
+    function addToAreaSnakeAndFood() {
 
         clearArea = JSON.parse(JSON.stringify(initialArea))    //is this declaration is necessary? this is also in top 
 
@@ -159,6 +157,6 @@
 
 
 
-    
+
     init(document.body)
 })()
