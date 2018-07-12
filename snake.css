@@ -1,0 +1,32 @@
+.game__row{
+}
+
+
+.game__cell--empty,
+.game__cell--snake-head,
+.game__cell--snake-body,
+.game__cell--food {
+
+    width: 50px;
+    height: 50px;
+    border: 1px solid #000;
+    display: inline-block;
+}
+
+
+.game__cell--empty{
+    background-color: blanchedalmond;
+}
+
+.game__cell--snake-head{
+    background-color:blue;
+}
+
+.game__cell--snake-body{
+    background-color:cornflowerblue;
+}
+
+
+.game__cell--food{
+    background-color: darkorange;
+}

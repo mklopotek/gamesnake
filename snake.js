@@ -64,7 +64,18 @@
     } 
     
     function prepareLayout(container) {
-        gameContainer = document.createElement('div')
+
+        function makeGameContainer(){
+            var gameContainer = document.createElement('div')
+            var atribute = document.createAttribute('class')
+            atribute.value = 'game'
+            gameContainer.setAttributeNode(atribute)
+    
+            return gameContainer
+        }
+
+        gameContainer = makeGameContainer()
+
         scoreContainer = document.createElement('div')
         // timeContainer = document.createElement('div')
         container.appendChild(scoreContainer)
@@ -102,7 +113,7 @@
 
             gameContainer.appendChild(row)
 
-            console.log(gameContainer)
+            console.log(gameContainer)   //it work i hope ;) 
 
         })
 
@@ -139,7 +150,7 @@
         const makeCellHeadSnake = function(){
             var head = document.createElement('div')
             var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--head'
+            atribute.value = 'game__cell--snake-head'
             head.setAttributeNode(atribute)
 
             return head
@@ -148,7 +159,7 @@
         const makeCellBodySnake = function(){
             var body = document.createElement('div')
             var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--body'
+            atribute.value = 'game__cell--snake-body'
             body.setAttributeNode(atribute)
 
             return body
