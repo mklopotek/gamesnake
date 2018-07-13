@@ -1,8 +1,8 @@
 
-(function () {
+// (function () {
 
 //"GLOBAL" VARIABLES
-
+    
     //this two variable are the number of rows (areaLengthX) and the number of columns (areaLenghtY)
     var areaRowsLengthX = 10
     var areaColumnsLengthY = 10
@@ -11,8 +11,8 @@
     var scoreContainer = ''
     // var timeContainer
 
-    //here we declaared that when we call initialArea it call the function createClearArea and give her a two variable -areaRowsLenghtX and areaColumnsLenghtY 
-    var initialArea = createClearArea(areaRowsLengthX, areaColumnsLengthY)
+    //here we declaared that when we call initialArea it call the function createEmptyArea and give her a two variable -areaRowsLenghtX and areaColumnsLenghtY 
+    var initialArea = createEmptyArea(areaRowsLengthX, areaColumnsLengthY)
 
     // console.log(initialArea) //it works
 
@@ -44,17 +44,17 @@
 
     //this function create clear area
 
-    function createClearArea(areaRowsLengthX, areaColumnsLengthY){
+    function createEmptyArea(areaRowsLengthX, areaColumnsLengthY){
         return Array(areaRowsLengthX).fill('0').map(function(element, index, array){
             return Array(areaColumnsLengthY).fill('0')
         })
     }
 
-    // console.log(createClearArea(10,2))     //it works
+    // console.log(createEmptyArea(10,2))     //it works
 
     function init(container) {
         prepareLayout(container)
-        addToAreaSnakeAndFood()
+        addSnakeAndFoodToArea()
         render()
         // this function should be called when we want to init game
         // it accepts 1 argument - dom node of the container
@@ -67,9 +67,7 @@
 
         function makeGameContainer(){
             var gameContainer = document.createElement('div')
-            var atribute = document.createAttribute('class')
-            atribute.value = 'game'
-            gameContainer.setAttributeNode(atribute)
+            gameContainer.classList.add('game')
     
             return gameContainer
         }
@@ -91,9 +89,6 @@
         gameContainer.innerHTML = ''
 
         // console.log(gameContainer)
-
-        addToAreaSnakeAndFood()   //to game container we invoked this function and give the area with snake and food
-
     
         area.forEach(function (areaRow, index, array) {
 
@@ -137,93 +132,40 @@
     // console.log(makeRowsforElementsInArea())  //it works but maybe I should change the name of class for row? 
 
     function makeCellforElementsThatInElementsInArea(element){
-
-        const makeCellEmpty = function(){
-            var empty = document.createElement('div')
-            var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--empty'
-            empty.setAttributeNode(atribute)
-
-            return empty
-        }
-        
-        const makeCellHeadSnake = function(){
-            var head = document.createElement('div')
-            var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--snake-head'
-            head.setAttributeNode(atribute)
-
-            return head
+        const makeGameElement = (modifier) => () => {
+            const el = document.createElement('div')
+            el.classList.add('game__cell--' + modifier)
+            return el
         }
 
-        const makeCellBodySnake = function(){
-            var body = document.createElement('div')
-            var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--snake-body'
-            body.setAttributeNode(atribute)
+        const makeCellEmpty = makeGameElement('empty')   
+        const makeCellHeadSnake = makeGameElement('snake-head')
+        const makeCellBodySnake = makeGameElement('snake-body')
+        const makeCellFood = makeGameElement('food')
 
-            return body
-        }
-
-        const makeCellFood = function(){
-            var food = document.createElement('div')
-            var atribute = document.createAttribute('class')
-            atribute.value = 'game__cell--food'
-            food.setAttributeNode(atribute)
-
-            return food
-        }
-
+        // @TODO - change if else to switch
         if(element === '0'){
-
-           return  makeCellEmpty()
-        
+           return  makeCellEmpty() 
         } else if(element === 'H') {
-
            return makeCellHeadSnake()
-
         } else if(element === '1'){
-
            return makeCellBodySnake()
-
         } else if(element === 'F'){
-
             return makeCellFood()
         }
-
- 
     }
 
-    function addToAreaSnakeAndFood () {
-
-        area = JSON.parse(JSON.stringify(initialArea))    //is this declaration is necessary? this is also in top 
-
+    function addSnakeAndFoodToArea () {
         area[initialPositionSnakeHead.whatRow][initialPositionSnakeHead.whatColumn] = 'H'
 
         area[initialPositionSnakeBody1.whatRow][initialPositionSnakeBody1.whatColumn] = '1'
         area[initialPositionSnakeBody2.whatRow][initialPositionSnakeBody2.whatColumn] = '1'
 
         area[initialPositionFood.whatRow][initialPositionFood.whatColumn] = 'F'
-
     }
 
  
     // console.log(area)   //it works the clear area have changed and added H, F, 1, 1 :) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // here you can put some functions taht renders only parts of the game 
     // and will be used in render function
@@ -258,10 +200,5 @@
     // START GAME
     // document.body is an example of the container for the game
 
-
-
-
-
-    
     init(document.body)
-})()
+// })()
