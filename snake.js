@@ -2,6 +2,8 @@
 // (function () {
 
 function GameSnake() {
+    this.container = document.body
+    
     this.areaRowsLengthX = 10
     this.areaColumnsLengthY = 10
     this.gameContainer = null
@@ -17,18 +19,16 @@ function GameSnake() {
         whatColumn: whatColumn
     })
 
+
     this.initialPositionSnakeHead = this.initialPosition(6, 6)
     this.initialPositionSnakeBody1 = this.initialPosition(7, 6)
     this.initialPositionSnakeBody2 = this.initialPosition(8, 6)
     this.initialPositionFood = this.initialPosition(3, 3)
-    this.foodPosition = null
-    this.score = null
-    this.gameInterval = null
-    this.container = document.body
 
-    this.positionSnakeHead = this.initialPositionSnakeHead 
-    this.positionSnakeBody1 = this.initialPositionSnakeBody1
-    this.positionSnakeBody2 = this.initialPositionSnakeBody2
+    this.positionSnakeHead = JSON.parse(JSON.stringify(this.initialPositionSnakeHead))
+    this.positionSnakeBody1 = JSON.parse(JSON.stringify(this.initialPositionSnakeBody1))
+    this.positionSnakeBody2 = JSON.parse(JSON.stringify(this.initialPositionSnakeBody2))
+    this.positionFood = JSON.parse(JSON.stringify(this.initialPositionFood))
 
     this.rememberTheLastMove = this.initialPosition(-1, 0)
 
@@ -46,7 +46,7 @@ GameSnake.prototype.init = function () {
     this.addSnakeAndFoodToArea()
     this.render()
     this.eventListeners()
-    // this.setInterval(move(rememberTheLastMove.whatRow, rememberTheLastMove.whatColumn), 5000)    //i don't know if it works ?????!!!!
+
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -68,6 +68,8 @@ GameSnake.prototype.prepareLayout = function () {
 GameSnake.prototype.render = function () {
     this.gameContainer.innerHTML = ''
 
+    this.addSnakeAndFoodToArea()
+
     this.area.forEach(areaRow => {
         var row = this.makeRowsforElementsInArea()
 
@@ -78,7 +80,7 @@ GameSnake.prototype.render = function () {
 
         this.gameContainer.appendChild(row)
 
-        console.log(this.gameContainer)   //it work i hope ;) 
+        // console.log(this.gameContainer)   //it work i hope ;) 
     })
 }
   
@@ -113,10 +115,11 @@ GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element)
 }
 
 GameSnake.prototype.addSnakeAndFoodToArea = function () {
-    this.area[this.initialPositionSnakeHead.whatRow][this.initialPositionSnakeHead.whatColumn] = 'H'
-    this.area[this.initialPositionSnakeBody1.whatRow][this.initialPositionSnakeBody1.whatColumn] = '1'
-    this.area[this.initialPositionSnakeBody2.whatRow][this.initialPositionSnakeBody2.whatColumn] = '1'
-    this.area[this.initialPositionFood.whatRow][this.initialPositionFood.whatColumn] = 'F'
+    this.area = JSON.parse(JSON.stringify(this.initialArea))
+    this.area[this.positionSnakeHead.whatRow][this.positionSnakeHead.whatColumn] = 'H'
+    this.area[this.positionSnakeBody1.whatRow][this.positionSnakeBody1.whatColumn] = '1'
+    this.area[this.positionSnakeBody2.whatRow][this.positionSnakeBody2.whatColumn] = '1'
+    this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = 'F'
 }
 
 GameSnake.prototype.eventListeners = function() {
@@ -131,7 +134,7 @@ GameSnake.prototype.eventListeners = function() {
                     break
 
             case 'ArrowUp':
-                self.move(-1, 0)
+                self.move(-1, 0)           
                     break
 
             case 'ArrowRight':
@@ -142,10 +145,10 @@ GameSnake.prototype.eventListeners = function() {
                self. move(1, 0)
                     break
 
-            default: return 
+            // default: return 
         }
 
-        event.preventDefault()
+        // event.preventDefault()
 
     })
 
@@ -153,27 +156,39 @@ GameSnake.prototype.eventListeners = function() {
 
 
 
+// this.setInterval(this.move(rememberTheLastMove.whatRow, rememberTheLastMove.whatColumn), 1000)    //i don't know if it works ?????!!!!
+
+GameSnake.prototype.move = function(deltaRow, deltaColumn) {
+
+// this.rememberTheLastMove.whatRow = deltaRow
+// this.rememberTheLastMove.whatColumn = deltaColumn
+
+//zamienić body2 na 0
+
+this.positionSnakeBody1.whatRow = this.positionSnakeBody2.whatRow
+this.positionSnakeBody1.whatColumn = this.positionSnakeBody2.whatColumn
+
+this.positionSnakeBody2.whatRow = this.positionSnakeHead.whatRow
+this.positionSnakeBody2.whatColumn = this.positionSnakeHead.whatColumn
 
 
-GameSnake.prototype.move = function(whatRow, whatColumn) {
+this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
 
-this.rememberTheLastMove.whatRow = whatRow
-this.rememberTheLastMove.whatColumn = whatColumn
-
-// this.positionSnakeBody2.whatRow = whatRow
-// this.positionSnakeBody2.whatColumn = whatColumn
+// this.area[this.positionSnakeHead.whatRow][this.positionSnakeHead.whatColumn]
 
 
-return console.log(this.rememberTheLastMove)
+
 
 this.render()
+
 
 }
 
 
 
 
-new GameSnake()
+const game1 = new GameSnake()
 
 // // })()
 
