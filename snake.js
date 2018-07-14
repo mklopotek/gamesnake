@@ -26,6 +26,12 @@ function GameSnake() {
     this.gameInterval = null
     this.container = document.body
 
+    this.positionSnakeHead = this.initialPositionSnakeHead 
+    this.positionSnakeBody1 = this.initialPositionSnakeBody1
+    this.positionSnakeBody2 = this.initialPositionSnakeBody2
+
+    this.rememberTheLastMove = this.initialPosition(-1, 0)
+
     this.init()
 }
 
@@ -39,6 +45,8 @@ GameSnake.prototype.init = function () {
     this.prepareLayout()
     this.addSnakeAndFoodToArea()
     this.render()
+    this.eventListeners()
+    // this.setInterval(move(rememberTheLastMove.whatRow, rememberTheLastMove.whatColumn), 5000)    //i don't know if it works ?????!!!!
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -92,15 +100,15 @@ GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element)
     const makeCellBodySnake = makeGameElement('snake-body')
     const makeCellFood = makeGameElement('food')
 
-    // @TODO - change if else to switch
-    if (element === '0') {
-        return makeCellEmpty()
-    } else if (element === 'H') {
-        return makeCellHeadSnake()
-    } else if (element === '1') {
-        return makeCellBodySnake()
-    } else if (element === 'F') {
-        return makeCellFood()
+    switch (element) {
+        case '0':
+            return makeCellEmpty();
+        case 'H':
+            return makeCellHeadSnake()
+        case '1':
+            return makeCellBodySnake()
+        case 'F': 
+            return makeCellFood()
     }
 }
 
@@ -110,6 +118,60 @@ GameSnake.prototype.addSnakeAndFoodToArea = function () {
     this.area[this.initialPositionSnakeBody2.whatRow][this.initialPositionSnakeBody2.whatColumn] = '1'
     this.area[this.initialPositionFood.whatRow][this.initialPositionFood.whatColumn] = 'F'
 }
+
+GameSnake.prototype.eventListeners = function() {
+
+    const self = this
+
+    this.container.addEventListener('keydown', function(event){
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                self.move(0, -1)
+                    break
+
+            case 'ArrowUp':
+                self.move(-1, 0)
+                    break
+
+            case 'ArrowRight':
+               self. move(0, 1)
+                    break
+
+            case 'ArrowDown':
+               self. move(1, 0)
+                    break
+
+            default: return 
+        }
+
+        event.preventDefault()
+
+    })
+
+}
+
+
+
+
+
+GameSnake.prototype.move = function(whatRow, whatColumn) {
+
+this.rememberTheLastMove.whatRow = whatRow
+this.rememberTheLastMove.whatColumn = whatColumn
+
+// this.positionSnakeBody2.whatRow = whatRow
+// this.positionSnakeBody2.whatColumn = whatColumn
+
+
+return console.log(this.rememberTheLastMove)
+
+this.render()
+
+}
+
+
+
 
 new GameSnake()
 
