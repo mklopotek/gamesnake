@@ -187,8 +187,7 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
 
         //check if the new head isn't a old food
 
-        if(this.positionSnakeHead.whatRow + deltaRow != this.positionFood.whatRow
-            && this.positionSnakeHead.whatColumn + deltaColumn != this.positionFood.whatColumn){
+        if(this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] != this.area[this.positionFood.whatRow][this.positionFood.whatColumn]){
 
                 this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
                 this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
@@ -201,23 +200,23 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
                 
                 this.render()
 
-            } else {
+                } else {
 
             //if the new head is a food, change food to a new place 
 
-            this.placeNewFood()
+                    this.placeNewFood()
 
-            this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
-                this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
-                
-                this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
-                this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
-                
-                this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
-                this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
-                
-                this.render()
-            }
+                    this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+                    this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+                    
+                    this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+                    this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+                    
+                    this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+                    this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+                    
+                    this.render()
+                }
 
     } else { 
             window.location = ''
@@ -227,7 +226,6 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
 }
 
 GameSnake.prototype.placeNewFood = function() {
-
     var newFoodPosition = {
         whatRow: Math.floor(Math.random() * this.areaRowsLengthX),
         whatColumn: Math.floor(Math.random() * this.areaColumnsLengthY)
@@ -242,8 +240,9 @@ GameSnake.prototype.placeNewFood = function() {
     }
     
     this.positionFood = newFoodPosition
-
 }
+
+
 
 
 
