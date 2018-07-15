@@ -66,8 +66,16 @@ GameSnake.prototype.prepareLayout = function () {
         return gameContainer
     }
 
+
+    function makeScoreContainer() {
+        scoreContainer = document.createElement('div')
+        scoreContainer.classList.add('score')
+
+        return scoreContainer
+    }
+
     this.gameContainer = makeGameContainer()
-    this.scoreContainer = document.createElement('div')
+    this.scoreContainer = makeScoreContainer()
     this.container.appendChild(this.scoreContainer)
     this.container.appendChild(this.gameContainer)
 }
@@ -187,7 +195,9 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
     if(this.positionSnakeHead.whatRow + deltaRow >= 0
     && this.positionSnakeHead.whatColumn + deltaColumn >= 0
     && this.positionSnakeHead.whatRow + deltaRow < this.areaRowsLengthX
-    && this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY) {
+    && this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY
+    && this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] 
+    != this.area[this.positionSnakeBody1.whatRow][this.positionSnakeBody1.whatColumn]) {
 
         //check if the new head isn't a old food
 
@@ -224,7 +234,7 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
 
     } else { 
             window.location = ''
-            alert('GAME OVER\n'  + 'Your score is: ' + this.score)
+            alert('GAME OVER\n'  + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
 }
 
 }
@@ -254,10 +264,8 @@ GameSnake.prototype.incScore = function(){
 
 GameSnake.prototype.displayScore = function(score){
     this.score = score || this.score
-    this.scoreContainer.innerHTML = this.score
+    this.scoreContainer.innerHTML = 'Your curent score is: ' + this.score
 }
-
-
 
 
 const game1 = new GameSnake()
