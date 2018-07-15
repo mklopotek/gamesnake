@@ -31,12 +31,14 @@ function GameSnake() {
     this.positionFood = JSON.parse(JSON.stringify(this.initialPositionFood))
 
     this.rememberTheLastMove = this.initialPosition(-1, 0)
+    this.time = setInterval(() => {this.move(this.rememberTheLastMove.whatRow, this.rememberTheLastMove.whatColumn)}, 500)
+    // console.log(this.rememberTheLastMove.whatRow)
 
     this.init()
 }
 
 GameSnake.prototype.createEmptyArea = function (areaRowsLengthX, areaColumnsLengthY) {
-    return Array(areaRowsLengthX).fill('0').map(function (element, index, array) {
+    return Array(areaRowsLengthX).fill('0').map(function () {
         return Array(areaColumnsLengthY).fill('0')
     })
 }
@@ -79,6 +81,7 @@ GameSnake.prototype.render = function () {
         })
 
         this.gameContainer.appendChild(row)
+
 
         // console.log(this.gameContainer)   //it work i hope ;) 
     })
@@ -131,18 +134,26 @@ GameSnake.prototype.eventListeners = function() {
         switch (event.key) {
             case 'ArrowLeft':
                 self.move(0, -1)
+                self.rememberTheLastMove.whatRow = 0
+                self.rememberTheLastMove.whatColumn = -1
                     break
 
             case 'ArrowUp':
-                self.move(-1, 0)           
+                self.move(-1, 0)
+                self.rememberTheLastMove.whatRow = -1
+                self.rememberTheLastMove.whatColumn = 0          
                     break
 
             case 'ArrowRight':
-               self. move(0, 1)
+               self.move(0, 1)
+               self.rememberTheLastMove.whatRow = 0
+               self.rememberTheLastMove.whatColumn = 1
                     break
 
             case 'ArrowDown':
-               self. move(1, 0)
+               self.move(1, 0)
+               self.rememberTheLastMove.whatRow = 1
+               self.rememberTheLastMove.whatColumn = 0
                     break
 
             // default: return 
@@ -150,7 +161,9 @@ GameSnake.prototype.eventListeners = function() {
 
         // event.preventDefault()
 
+
     })
+
 
 }
 
@@ -160,28 +173,31 @@ GameSnake.prototype.eventListeners = function() {
 
 GameSnake.prototype.move = function(deltaRow, deltaColumn) {
 
-// this.rememberTheLastMove.whatRow = deltaRow
-// this.rememberTheLastMove.whatColumn = deltaColumn
+    this.rememberTheLastMove.whatRow = deltaRow
+    this.rememberTheLastMove.whatColumn = deltaColumn
 
-//zamienić body2 na 0
+    if(this.positionSnakeHead.whatRow + deltaRow >= 0
+    && this.positionSnakeHead.whatColumn + deltaColumn >= 0
+    && this.positionSnakeHead.whatRow + deltaRow < this.areaRowsLengthX
+    && this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY) {
 
-this.positionSnakeBody1.whatRow = this.positionSnakeBody2.whatRow
-this.positionSnakeBody1.whatColumn = this.positionSnakeBody2.whatColumn
+        //if nowy head nie jest fooodem 
 
-this.positionSnakeBody2.whatRow = this.positionSnakeHead.whatRow
-this.positionSnakeBody2.whatColumn = this.positionSnakeHead.whatColumn
+        this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+        this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+        
+        this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+        this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+        
+        this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+        this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+        
+        this.render()
 
+        } else { 
 
-this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
-this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
-
-// this.area[this.positionSnakeHead.whatRow][this.positionSnakeHead.whatColumn]
-
-
-
-
-this.render()
-
+            alert("Game over")
+}
 
 }
 
