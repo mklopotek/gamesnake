@@ -8,6 +8,7 @@ function GameSnake() {
     this.areaColumnsLengthY = 10
     this.gameContainer = null
     this.scoreContainer = null
+
     //here we declaared that when we call initialArea it call the function createEmptyArea and give her a two variable -areaRowsLenghtX and areaColumnsLenghtY 
     this.initialArea = this.createEmptyArea(this.areaRowsLengthX, this.areaColumnsLengthY)
     // var clearArea = JSON.parse(JSON.stringify(initialArea))  //i dont know yet if there should be a clear, first area or only one area for all
@@ -34,6 +35,8 @@ function GameSnake() {
     this.time = setInterval(() => {this.move(this.rememberTheLastMove.whatRow, this.rememberTheLastMove.whatColumn)}, 1000)
     // console.log(this.rememberTheLastMove.whatRow)
 
+    this.score = 0
+
     this.init()
 }
 
@@ -46,6 +49,7 @@ GameSnake.prototype.createEmptyArea = function (areaRowsLengthX, areaColumnsLeng
 GameSnake.prototype.init = function () {
     this.prepareLayout()
     this.addSnakeAndFoodToArea()
+    this.displayScore(this.score)
     this.render()
     this.eventListeners()
 
@@ -203,7 +207,7 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
                 } else {
 
             //if the new head is a food, change food to a new place 
-
+                    this.incScore()
                     this.placeNewFood()
 
                     this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
@@ -220,7 +224,7 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
 
     } else { 
             window.location = ''
-            alert("Game over")
+            alert('GAME OVER\n'  + 'Your score is: ' + this.score)
 }
 
 }
@@ -242,7 +246,16 @@ GameSnake.prototype.placeNewFood = function() {
     this.positionFood = newFoodPosition
 }
 
+GameSnake.prototype.incScore = function(){
+    this.score ++
+    this.displayScore(this.score)
 
+}
+
+GameSnake.prototype.displayScore = function(score){
+    this.score = score || this.score
+    this.scoreContainer.innerHTML = this.score
+}
 
 
 
