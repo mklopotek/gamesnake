@@ -31,7 +31,7 @@ function GameSnake() {
     this.positionFood = JSON.parse(JSON.stringify(this.initialPositionFood))
 
     this.rememberTheLastMove = this.initialPosition(-1, 0)
-    this.time = setInterval(() => {this.move(this.rememberTheLastMove.whatRow, this.rememberTheLastMove.whatColumn)}, 500)
+    this.time = setInterval(() => {this.move(this.rememberTheLastMove.whatRow, this.rememberTheLastMove.whatColumn)}, 1000)
     // console.log(this.rememberTheLastMove.whatRow)
 
     this.init()
@@ -48,6 +48,8 @@ GameSnake.prototype.init = function () {
     this.addSnakeAndFoodToArea()
     this.render()
     this.eventListeners()
+
+    alert('Press "ok" to start!')
 
 }
 
@@ -156,10 +158,10 @@ GameSnake.prototype.eventListeners = function() {
                self.rememberTheLastMove.whatColumn = 0
                     break
 
-            // default: return 
+            // default: return    //is it necassary?
         }
 
-        // event.preventDefault()
+        // event.preventDefault()  //the same?
 
 
     })
@@ -176,28 +178,70 @@ GameSnake.prototype.move = function(deltaRow, deltaColumn) {
     this.rememberTheLastMove.whatRow = deltaRow
     this.rememberTheLastMove.whatColumn = deltaColumn
 
+    //check if new snake haed is in the area
+
     if(this.positionSnakeHead.whatRow + deltaRow >= 0
     && this.positionSnakeHead.whatColumn + deltaColumn >= 0
     && this.positionSnakeHead.whatRow + deltaRow < this.areaRowsLengthX
     && this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY) {
 
-        //if nowy head nie jest fooodem 
+        //check if the new head isn't a old food
 
-        this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
-        this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
-        
-        this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
-        this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
-        
-        this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
-        this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
-        
-        this.render()
+        if(this.positionSnakeHead.whatRow + deltaRow != this.positionFood.whatRow
+            && this.positionSnakeHead.whatColumn + deltaColumn != this.positionFood.whatColumn){
 
-        } else { 
+                this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+                this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+                
+                this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+                this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+                
+                this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+                this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+                
+                this.render()
 
+            } else {
+
+            //if the new head is a food, change food to a new place 
+
+            this.placeNewFood()
+
+            this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+                this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+                
+                this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+                this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+                
+                this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+                this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+                
+                this.render()
+            }
+
+    } else { 
+            window.location = ''
             alert("Game over")
 }
+
+}
+
+GameSnake.prototype.placeNewFood = function() {
+
+    var newFoodPosition = {
+        whatRow: Math.floor(Math.random() * this.areaRowsLengthX),
+        whatColumn: Math.floor(Math.random() * this.areaColumnsLengthY)
+    }
+    
+    if(this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 1
+    || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'H'
+    || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'F') {
+
+        this.placeNewFood()
+        return 
+    }
+    
+    this.positionFood = newFoodPosition
 
 }
 
