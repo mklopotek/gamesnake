@@ -1,9 +1,8 @@
-
 // (function () {
 
 function GameSnake() {
     this.container = document.body
-    
+
     this.areaRowsLengthX = 10
     this.areaColumnsLengthY = 10
     this.gameContainer = null
@@ -20,7 +19,6 @@ function GameSnake() {
         whatColumn: whatColumn
     })
 
-
     this.initialPositionSnakeHead = this.initialPosition(6, 6)
     this.initialPositionSnakeBody1 = this.initialPosition(7, 6)
     this.initialPositionSnakeBody2 = this.initialPosition(8, 6)
@@ -31,9 +29,11 @@ function GameSnake() {
     this.positionSnakeBody2 = JSON.parse(JSON.stringify(this.initialPositionSnakeBody2))
     this.positionFood = JSON.parse(JSON.stringify(this.initialPositionFood))
 
-    this.rememberTheLastMove = this.initialPosition(-1, 0)
-    this.time = setInterval(() => {this.move(this.rememberTheLastMove.whatRow, this.rememberTheLastMove.whatColumn)}, 1000)
-    // console.log(this.rememberTheLastMove.whatRow)
+    this.theLastMove = this.initialPosition(-1, 0)
+    this.mainIntervalId = setInterval(
+        () => this.checkIfMovieIsPossible(this.theLastMove.whatRow, this.theLastMove.whatColumn),
+        500
+    )
 
     this.score = 0
 
@@ -100,7 +100,7 @@ GameSnake.prototype.render = function () {
         // console.log(this.gameContainer)   //it work i hope ;) 
     })
 }
-  
+
 GameSnake.prototype.makeRowsforElementsInArea = function () {
     const row = document.createElement('div')
     row.classList.add('game__row')
@@ -126,7 +126,7 @@ GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element)
             return makeCellHeadSnake()
         case '1':
             return makeCellBodySnake()
-        case 'F': 
+        case 'F':
             return makeCellFood()
     }
 }
@@ -139,36 +139,31 @@ GameSnake.prototype.addSnakeAndFoodToArea = function () {
     this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = 'F'
 }
 
-GameSnake.prototype.eventListeners = function() {
+GameSnake.prototype.eventListeners = function () {
 
-    const self = this
-
-    this.container.addEventListener('keydown', function(event){
+    this.container.addEventListener('keydown', event => {
+        event.preventDefault()
 
         switch (event.key) {
             case 'ArrowLeft':
-                self.move(0, -1)
-                self.rememberTheLastMove.whatRow = 0
-                self.rememberTheLastMove.whatColumn = -1
-                    break
+                // this.move(0, -1)
+                this.rememberTheLastMove(0,-1)
+                break
 
             case 'ArrowUp':
-                self.move(-1, 0)
-                self.rememberTheLastMove.whatRow = -1
-                self.rememberTheLastMove.whatColumn = 0          
-                    break
+                // this.move(-1, 0)
+                this.rememberTheLastMove(-1,0)
+                break
 
             case 'ArrowRight':
-               self.move(0, 1)
-               self.rememberTheLastMove.whatRow = 0
-               self.rememberTheLastMove.whatColumn = 1
-                    break
+                //    this.move(0, 1)
+                this.rememberTheLastMove(0,1)
+                break
 
             case 'ArrowDown':
-               self.move(1, 0)
-               self.rememberTheLastMove.whatRow = 1
-               self.rememberTheLastMove.whatColumn = 0
-                    break
+                //    this.move(1, 0)
+                this.rememberTheLastMove(1,0)
+                break
 
             // default: return    //is it necassary?
         }
@@ -177,96 +172,94 @@ GameSnake.prototype.eventListeners = function() {
 
 
     })
-
-
 }
 
+GameSnake.prototype.checkIfMovieIsPossible = function (deltaRow, deltaColumn) {
+    this.rememberTheLastMove(deltaRow, deltaColumn)
 
+    //this variable are defined for if statement
+    const ifNextMoveIsInsideArrayRowsLeft = this.positionSnakeHead.whatRow + deltaRow >= 0
+    const ifNextMoveIsInsideArrayRowsRight = this.positionSnakeHead.whatRow + deltaRow < this.areaRowsLengthX
+    const ifNextMoveIsInsideArrayColumnLeft = this.positionSnakeHead.whatColumn + deltaColumn >= 0
+    const ifNextMoveIsInsideArrayColumnRight = this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY
+    const ifNextMoveIsNotSnakeBody = this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] !== this.area[this.positionSnakeBody1.whatRow][this.positionSnakeBody1.whatColumn]
 
-// this.setInterval(this.move(rememberTheLastMove.whatRow, rememberTheLastMove.whatColumn), 1000)    //i don't know if it works ?????!!!!
-
-GameSnake.prototype.move = function(deltaRow, deltaColumn) {
-
-    this.rememberTheLastMove.whatRow = deltaRow
-    this.rememberTheLastMove.whatColumn = deltaColumn
-
-    //check if new snake haed is in the area
-
-    if(this.positionSnakeHead.whatRow + deltaRow >= 0
-    && this.positionSnakeHead.whatColumn + deltaColumn >= 0
-    && this.positionSnakeHead.whatRow + deltaRow < this.areaRowsLengthX
-    && this.positionSnakeHead.whatColumn + deltaColumn < this.areaColumnsLengthY
-    && this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] 
-    != this.area[this.positionSnakeBody1.whatRow][this.positionSnakeBody1.whatColumn]) {
-
-        //check if the new head isn't a old food
-
-        if(this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] != this.area[this.positionFood.whatRow][this.positionFood.whatColumn]){
-
-                this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
-                this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
-                
-                this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
-                this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
-                
-                this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
-                this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
-                
-                this.render()
-
-                } else {
-
-            //if the new head is a food, change food to a new place 
-                    this.incScore()
-                    this.placeNewFood()
-
-                    this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
-                    this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
-                    
-                    this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
-                    this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
-                    
-                    this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
-                    this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
-                    
-                    this.render()
-                }
-
-    } else { 
-            window.location = ''
-            alert('GAME OVER\n'  + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
+    if (
+        ifNextMoveIsInsideArrayRowsLeft &&
+        ifNextMoveIsInsideArrayColumnLeft &&
+        ifNextMoveIsInsideArrayRowsRight &&
+        ifNextMoveIsInsideArrayColumnRight &&
+        ifNextMoveIsNotSnakeBody
+    ) {
+        this.move(deltaRow, deltaColumn)
+    } else {
+        this.endGame()
+    }
 }
 
+GameSnake.prototype.rememberTheLastMove = function(whatRow, whatColumn){
+    this.theLastMove.whatRow = whatRow
+    this.theLastMove.whatColumn = whatColumn
 }
 
-GameSnake.prototype.placeNewFood = function() {
+GameSnake.prototype.endGame = function(){
+    window.location = ''
+    alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
+}
+
+GameSnake.prototype.move = function(deltaRow, deltaColumn){
+    if (this.area[this.positionSnakeHead.whatRow + deltaRow][this.positionSnakeHead.whatColumn + deltaColumn] != this.area[this.positionFood.whatRow][this.positionFood.whatColumn]) {
+
+        this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+        this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+
+        this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+        this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+
+        this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+        this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+    } else {
+        //if the new head is a food, change food to a new place 
+        this.incScore()
+        this.placeNewFood()
+
+        this.positionSnakeBody2.whatRow = this.positionSnakeBody1.whatRow
+        this.positionSnakeBody2.whatColumn = this.positionSnakeBody1.whatColumn
+
+        this.positionSnakeBody1.whatRow = this.positionSnakeHead.whatRow
+        this.positionSnakeBody1.whatColumn = this.positionSnakeHead.whatColumn
+
+        this.positionSnakeHead.whatRow = this.positionSnakeHead.whatRow + deltaRow
+        this.positionSnakeHead.whatColumn = this.positionSnakeHead.whatColumn + deltaColumn
+    }
+    this.render()
+}
+
+GameSnake.prototype.placeNewFood = function () {
     var newFoodPosition = {
         whatRow: Math.floor(Math.random() * this.areaRowsLengthX),
         whatColumn: Math.floor(Math.random() * this.areaColumnsLengthY)
     }
-    
-    if(this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 1
-    || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'H'
-    || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'F') {
+
+    if (this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 1
+        || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'H'
+        || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'F') {
 
         this.placeNewFood()
-        return 
+        return
     }
-    
     this.positionFood = newFoodPosition
 }
 
-GameSnake.prototype.incScore = function(){
-    this.score ++
+GameSnake.prototype.incScore = function () {
+    this.score++
     this.displayScore(this.score)
-
 }
 
-GameSnake.prototype.displayScore = function(score){
+GameSnake.prototype.displayScore = function (score) {
     this.score = score || this.score
     this.scoreContainer.innerHTML = 'Your curent score is: ' + this.score
 }
-
 
 const game1 = new GameSnake()
 
