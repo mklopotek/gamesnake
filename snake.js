@@ -16,15 +16,13 @@ function GameSnake() {
         whatColumn: whatColumn
     })
 
-    this.positionFood = this.initialPosition(3, 3)
+    this.positionFood = JSON.parse(JSON.stringify(this.initialPosition(3, 3)))
 
     this.snakeBody = [
         this.initialPosition(6, 6),
         this.initialPosition(7, 6),
         this.initialPosition(8, 6),
     ]
-
-    console.log(this.snakeBody)
 
     this.theLastMove = this.initialPosition(-1, 0)
     this.mainIntervalId = setInterval(
@@ -38,14 +36,15 @@ function GameSnake() {
 }
 
 GameSnake.prototype.createEmptyArea = function (areaRowsLengthX, areaColumnsLengthY) {
-    return Array(areaRowsLengthX).fill('0').map(function () {
-        return Array(areaColumnsLengthY).fill('0')
+    return Array(areaRowsLengthX).fill(1).map(function () {
+        return Array(areaColumnsLengthY).fill(1)
     })
 }
 
 GameSnake.prototype.init = function () {
     this.prepareLayout()
-    this.addSnakeAndFoodToArea()
+    this.addFoodToArea()
+    this.addSnakeToArea()
     this.displayScore(this.score)
     this.render()
     this.eventListeners()
@@ -83,13 +82,14 @@ GameSnake.prototype.render = function () {
 
     this.area = JSON.parse(JSON.stringify(this.initialArea))
 
-    this.addSnakeAndFoodToArea()
+    this.addSnakeToArea()
+    this.addFoodToArea()
 
     this.area.forEach((areaRow, whatRow) => {
-        var row = this.makeRowsforElementsInArea()
+        var row = this.makeRow()
 
         areaRow.forEach((element, whatColumn) => {
-            var cell = this.makeCellforElementsThatInElementsInArea(element, whatColumn, whatRow)
+            var cell = this.makeCell(element, whatColumn, whatRow)
             row.appendChild(cell)
         })
 
@@ -98,13 +98,13 @@ GameSnake.prototype.render = function () {
     })
 }
 
-GameSnake.prototype.makeRowsforElementsInArea = function () {
+GameSnake.prototype.makeRow = function () {
     const row = document.createElement('div')
     row.classList.add('game__row')
     return row
 }
 
-GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element) {
+GameSnake.prototype.makeCell = function (element, whatColumn, whatRow) {
     const makeGameElement = (modifier) => () => {
         const el = document.createElement('div')
         el.classList.add('game__cell--' + modifier)
@@ -116,27 +116,30 @@ GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element)
     const makeCellBodySnake = makeGameElement('snake-body')
     const makeCellFood = makeGameElement('food')
 
-    switch (element) {
-        case '0':
-            return makeCellEmpty();
-        case 'H':
+    if(this.snakeBody[0].whatRow === whatRow &&
+        this.snakeBody[0].whatColumn === whatColumn){
             return makeCellHeadSnake()
-        case '1':
+        }
+
+    switch (element) {
+        case 1:
+            return makeCellEmpty();
+        case 0:
             return makeCellBodySnake()
-        case 'F':
+        case true:
             return makeCellFood()
+    }
+
+}
+
+GameSnake.prototype.addSnakeToArea = function () {
+    for (let i = 0; i < this.snakeBody.length; i++) {
+        this.area[this.snakeBody[i].whatRow][this.snakeBody[i].whatColumn] = 0
     }
 }
 
-GameSnake.prototype.addSnakeAndFoodToArea = function () {
-console.log(this.snakeBody)
-    this.area[this.snakeBody[0].whatRow][this.snakeBody[0].whatColumn] = 'H'
-
-    for (let i = 1; i < this.snakeBody.length; i++) {
-        this.area[this.snakeBody[i].whatRow][this.snakeBody[i].whatColumn] = '1'
-    }
-
-    this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = 'F'
+GameSnake.prototype.addFoodToArea = function () {
+    this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = true
 }
 
 GameSnake.prototype.eventListeners = function () {
@@ -175,22 +178,7 @@ GameSnake.prototype.eventListeners = function () {
 }
 
 GameSnake.prototype.checkIfMovieIsPossible = function (deltaRow, deltaColumn) {
-    // this.rememberTheLastMove(deltaRow, deltaColumn)
-
-    //this variable are defined for if statement
-    const ifNextMoveIsInsideArrayRowsTop = this.snakeBody[0].whatRow + deltaRow >= 0
-    const ifNextMoveIsInsideArrayRowsButtom = this.snakeBody[0].whatRow + deltaRow < this.areaRowsLengthX
-    const ifNextMoveIsInsideArrayColumnLeft = this.snakeBody[0].whatColumn + deltaColumn >= 0
-    const ifNextMoveIsInsideArrayColumnRight = this.snakeBody[0].whatColumn + deltaColumn < this.areaColumnsLengthY
-
-
-    if (
-        ifNextMoveIsInsideArrayRowsTop &&
-        ifNextMoveIsInsideArrayColumnLeft &&
-        ifNextMoveIsInsideArrayRowsButtom &&
-        ifNextMoveIsInsideArrayColumnRight 
-
-    ) {
+    if(this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] == true){
         this.move(deltaRow, deltaColumn)
     } else {
         this.endGame()
@@ -209,15 +197,21 @@ GameSnake.prototype.endGame = function () {
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
     
-    if(this.snakeBody[0].whatRow + deltaRow !== this.positionFood.whatRow &&
-        this.snakeBody[0].whatColumn + deltaColumn !== this.positionFood.whatColumn){
+
+        // this.placeNewFood()
+        // this.incScore()
+        // this.createNewSnakeBody(deltaRow, deltaColumn)
+
+    if(this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] !== 
+        this.area[this.positionFood.whatRow][this.positionFood.whatColumn])
+    {
 
         this.createNewSnakeBody(deltaRow, deltaColumn)
 
     } else {
-        //if the new head is a food, change food to a new place 
-        this.incScore()
         this.placeNewFood()
+        this.createNewSnakeBody(deltaRow, deltaColumn)
+        this.incScore()
     }
     
     this.render()
@@ -242,9 +236,8 @@ GameSnake.prototype.placeNewFood = function () {
         whatColumn: Math.floor(Math.random() * this.areaColumnsLengthY)
     }
 
-    if (this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === '1'
-        || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'H'
-        || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 'F'
+    if (this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === 0
+        || this.area[newFoodPosition.whatRow][newFoodPosition.whatColumn] === true
     ) {
 
         this.placeNewFood()
