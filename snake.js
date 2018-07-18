@@ -49,7 +49,7 @@ GameSnake.prototype.init = function () {
     this.render()
     this.eventListeners()
 
-    // alert('Press "ok" to start!')
+    alert('Press "ok" to start!')
 
 }
 
@@ -76,7 +76,6 @@ GameSnake.prototype.prepareLayout = function () {
     this.container.appendChild(this.gameContainer)
 }
 
-//this function will be transform the table from js to HTML 
 GameSnake.prototype.render = function () {
     this.gameContainer.innerHTML = ''
 
@@ -149,31 +148,21 @@ GameSnake.prototype.eventListeners = function () {
 
         switch (event.key) {
             case 'ArrowLeft':
-                // this.move(0, -1)
                 this.rememberTheLastMove(0, -1)
                 break
 
             case 'ArrowUp':
-                // this.move(-1, 0)
                 this.rememberTheLastMove(-1, 0)
                 break
 
             case 'ArrowRight':
-                //    this.move(0, 1)
                 this.rememberTheLastMove(0, 1)
                 break
 
             case 'ArrowDown':
-                //    this.move(1, 0)
                 this.rememberTheLastMove(1, 0)
                 break
-
-            // default: return    //is it necassary?
         }
-
-        // event.preventDefault()  //the same?
-
-
     })
 }
 
@@ -191,29 +180,23 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 }
 
 GameSnake.prototype.endGame = function () {
-    // window.location = ''
-    // alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
+    window.location = ''
+    alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
 }
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
-    
-
-        // this.placeNewFood()
-        // this.incScore()
-        // this.createNewSnakeBody(deltaRow, deltaColumn)
 
     if(this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] !== 
         this.area[this.positionFood.whatRow][this.positionFood.whatColumn])
     {
-
         this.createNewSnakeBody(deltaRow, deltaColumn)
 
     } else {
         this.placeNewFood()
-        this.createNewSnakeBody(deltaRow, deltaColumn)
+        this.createNewSnakeBodyWithGrow(deltaRow, deltaColumn)
         this.incScore()
     }
-    
+
     this.render()
 }
 
@@ -224,8 +207,18 @@ GameSnake.prototype.createNewSnakeBody = function (deltaRow, deltaColumn) {
         whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
 
     var snakeBodyWithouLastElement = this.snakeBody.slice(0, -1)
-
     var newSnakeBody = newSnakeHead.concat(snakeBodyWithouLastElement)
+
+    this.snakeBody = newSnakeBody
+}
+
+GameSnake.prototype.createNewSnakeBodyWithGrow = function (deltaRow, deltaColumn) {
+
+    var newSnakeHead = [{
+        whatRow: this.snakeBody[0].whatRow + deltaRow,
+        whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
+
+    var newSnakeBody = newSnakeHead.concat(this.snakeBody)
     
     this.snakeBody = newSnakeBody
 }
