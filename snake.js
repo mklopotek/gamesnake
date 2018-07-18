@@ -85,11 +85,11 @@ GameSnake.prototype.render = function () {
 
     this.addSnakeAndFoodToArea()
 
-    this.area.forEach(areaRow => {
+    this.area.forEach((areaRow, whatRow) => {
         var row = this.makeRowsforElementsInArea()
 
-        areaRow.forEach(element => {
-            var cell = this.makeCellforElementsThatInElementsInArea(element)
+        areaRow.forEach((element, whatColumn) => {
+            var cell = this.makeCellforElementsThatInElementsInArea(element, whatColumn, whatRow)
             row.appendChild(cell)
         })
 
@@ -212,35 +212,28 @@ GameSnake.prototype.move = function (deltaRow, deltaColumn) {
     if(this.snakeBody[0].whatRow + deltaRow !== this.positionFood.whatRow &&
         this.snakeBody[0].whatColumn + deltaColumn !== this.positionFood.whatColumn){
 
-        const createNewSnakeBody = () => {
-
-            var newSnakeHead = [{
-                whatRow: this.snakeBody[0].whatRow + deltaRow,
-                whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
-
-                console.log('new head is ', newSnakeHead)
-
-
-            var snakeBodyWithouLastElement = this.snakeBody.slice(0, -1)
-
-            console.log('snake witot head is: ', snakeBodyWithouLastElement)
-
-            var newSnakeBody = newSnakeHead.concat(snakeBodyWithouLastElement)
-            
-            this.snakeBody = newSnakeBody
-
-        }
-
-        createNewSnakeBody()
+        this.createNewSnakeBody(deltaRow, deltaColumn)
 
     } else {
         //if the new head is a food, change food to a new place 
         this.incScore()
         this.placeNewFood()
-
     }
     
     this.render()
+}
+
+GameSnake.prototype.createNewSnakeBody = function (deltaRow, deltaColumn) {
+
+    var newSnakeHead = [{
+        whatRow: this.snakeBody[0].whatRow + deltaRow,
+        whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
+
+    var snakeBodyWithouLastElement = this.snakeBody.slice(0, -1)
+
+    var newSnakeBody = newSnakeHead.concat(snakeBodyWithouLastElement)
+    
+    this.snakeBody = newSnakeBody
 }
 
 GameSnake.prototype.placeNewFood = function () {
