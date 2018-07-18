@@ -21,11 +21,13 @@
 
 
 .game__cell--empty{
-    background-color: blanchedalmond;
+    background-color: rgb(148, 232, 235);
+    background-image: url('./wave.png')
 }
 
 .game__cell--snake-head{
     background-color:blue;
+    background-image: url('./penguin.png')
 }
 
 .game__cell--snake-body{
@@ -34,5 +36,6 @@
 
 
 .game__cell--food{
-    background-color: darkorange;
+    background-color:rgb(148, 232, 235);
+    background-image: url('./octopus.png')
 }

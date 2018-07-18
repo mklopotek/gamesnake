@@ -149,18 +149,22 @@ GameSnake.prototype.eventListeners = function () {
         switch (event.key) {
             case 'ArrowLeft':
                 this.rememberTheLastMove(0, -1)
+                this.roundPicture(0, -1)
                 break
 
             case 'ArrowUp':
                 this.rememberTheLastMove(-1, 0)
+                this.roundPicture(-1, 0)
                 break
 
             case 'ArrowRight':
                 this.rememberTheLastMove(0, 1)
+                this.roundPicture(0, 1)
                 break
 
             case 'ArrowDown':
                 this.rememberTheLastMove(1, 0)
+                this.roundPicture(1, 0)
                 break
         }
     })
@@ -253,3 +257,16 @@ const game1 = new GameSnake()
 
 // // })()
 
+
+GameSnake.prototype.roundPicture = function (bottomTop, rightLeft){
+
+    if (bottomTop === 0){
+        rightLeft > 0? document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_right")' : 
+        document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_left")' 
+    } else {
+
+        bottomTop > 0? document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_bottom")' : 
+        document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_top")' 
+    
+    }
+}
