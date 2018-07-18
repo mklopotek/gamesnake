@@ -27,6 +27,8 @@ function GameSnake() {
         this.initialPosition(8, 6),
     ]
 
+    console.log(this.snakeBody)
+
     this.theLastMove = this.initialPosition(-1, 0)
     this.mainIntervalId = setInterval(
         () => this.checkIfMovieIsPossible(this.theLastMove.whatRow, this.theLastMove.whatColumn),
@@ -81,7 +83,6 @@ GameSnake.prototype.prepareLayout = function () {
 //this function will be transform the table from js to HTML 
 GameSnake.prototype.render = function () {
     this.gameContainer.innerHTML = ''
-
     this.addSnakeAndFoodToArea()
 
     this.area.forEach(areaRow => {
@@ -94,8 +95,6 @@ GameSnake.prototype.render = function () {
 
         this.gameContainer.appendChild(row)
 
-
-        // console.log(this.gameContainer)   //it work i hope ;) 
     })
 }
 
@@ -130,10 +129,12 @@ GameSnake.prototype.makeCellforElementsThatInElementsInArea = function (element)
 }
 
 GameSnake.prototype.addSnakeAndFoodToArea = function () {
-    this.area = this.initialArea
     this.area[this.snakeBody[0].whatRow][this.snakeBody[0].whatColumn] = 'H'
-    this.area[this.snakeBody[1].whatRow][this.snakeBody[1].whatColumn] = '1'
-    this.area[this.snakeBody[2].whatRow][this.snakeBody[2].whatColumn] = '1'
+
+    for(let i = 1; i < this.snakeBody.length; i++){
+        this.area[this.snakeBody[i].whatRow][this.snakeBody[i].whatColumn] = '1'
+    }
+
     this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = 'F'
 }
 
@@ -209,10 +210,14 @@ GameSnake.prototype.endGame = function () {
 GameSnake.prototype.move = function (deltaRow, deltaColumn) {
     if (this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] != this.area[this.positionFood.whatRow][this.positionFood.whatColumn]) {
 
+        
+        
+        
         this.snakeBody[this.snakeBody.length-1].whatRow = this.snakeBody[0].whatRow 
         this.snakeBody[this.snakeBody.length-1].whatColumn = this.snakeBody[0].whatColumn 
-        this.snakeBody[0].whatRow = this.snakeBody[0] + deltaRow
-        this.snakeBody[0].whatColumn = this.snakeBody[0] + deltaColumn
+        this.snakeBody[0].whatRow = this.snakeBody[0].whatRow + deltaRow
+        this.snakeBody[0].whatColumn = this.snakeBody[0].whatColumn + deltaColumn
+
 
 
         // this.snakeBody[2].whatRow = this.snakeBody[1].whatRow
@@ -227,6 +232,11 @@ GameSnake.prototype.move = function (deltaRow, deltaColumn) {
         //if the new head is a food, change food to a new place 
         this.incScore()
         this.placeNewFood()
+
+        this.snakeBody[this.snakeBody.length-1].whatRow = this.snakeBody[0].whatRow 
+        this.snakeBody[this.snakeBody.length-1].whatColumn = this.snakeBody[0].whatColumn 
+        this.snakeBody[0].whatRow = this.snakeBody[0].whatRow + deltaRow
+        this.snakeBody[0].whatColumn = this.snakeBody[0].whatColumn + deltaColumn
 
         // this.snakeBody[2].whatRow = this.snakeBody[1].whatRow
         // this.snakeBody[2].whatColumn = this.snakeBody[1].whatColumn
