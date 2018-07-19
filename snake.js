@@ -7,6 +7,7 @@ function GameSnake() {
     this.areaColumnsLengthY = 10
     this.gameContainer = null
     this.scoreContainer = null
+    this.rankingContainer = null
 
     this.initialArea = this.createEmptyArea(this.areaRowsLengthX, this.areaColumnsLengthY)
     this.area = JSON.parse(JSON.stringify(this.initialArea))
@@ -49,7 +50,7 @@ GameSnake.prototype.init = function () {
     this.render()
     this.eventListeners()
 
-    alert('Press "ok" to start!')
+    // alert('Press "ok" to start!')
 
 }
 
@@ -70,10 +71,19 @@ GameSnake.prototype.prepareLayout = function () {
         return scoreContainer
     }
 
+    function makeRankingContainer(){
+        rankingContainer = document.createElement('div')   
+        rankingContainer.classList.add('ranking')
+
+        return rankingContainer
+    }
+
     this.gameContainer = makeGameContainer()
     this.scoreContainer = makeScoreContainer()
+    this.rankingContainer = makeRankingContainer()
     this.container.appendChild(this.scoreContainer)
     this.container.appendChild(this.gameContainer)
+    this.container.appendChild(this.rankingContainer)
 }
 
 GameSnake.prototype.render = function () {
@@ -167,7 +177,7 @@ GameSnake.prototype.eventListeners = function () {
 }
 
 GameSnake.prototype.checkIfMovieIsPossible = function (deltaRow, deltaColumn) {
-    if(this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] == true){
+    if(this.area[this.snakeBody[0].whatRow + deltaRow] && this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn]){
         this.move(deltaRow, deltaColumn)
     } else {
         this.endGame()
@@ -180,8 +190,8 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 }
 
 GameSnake.prototype.endGame = function () {
-    window.location = ''
-    alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
+    // window.location = ''
+    // alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
 }
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
@@ -249,6 +259,31 @@ GameSnake.prototype.displayScore = function (score) {
     this.scoreContainer.innerHTML = 'Your curent score is: ' + this.score
 }
 
+// GameSnake.prototype.createPrompt = function (){
+
+//     function makeRankingContainer(){
+//         rankingContainer = document.createElement('div')
+        
+//         rankingContainer.classList.add('ranking')
+
+//         return rankingContainer
+//     }
+
+
+
+
+// }
+
+
+
+
+
+
+
+
+
+
+
 const game1 = new GameSnake()
 
 // // })()
@@ -265,4 +300,4 @@ const game1 = new GameSnake()
 //         document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_top")' 
     
 //     }
-// }
+// } 
