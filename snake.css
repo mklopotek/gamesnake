@@ -26,12 +26,11 @@
 }
 
 .game__cell--snake-head{
-    background-color:blue;
-    background-image: url('./penguin.png')
+    background-color:darkorchid
 }
 
 .game__cell--snake-body{
-    background-color:cornflowerblue;
+    background-color:deeppink;
 }
 
 
