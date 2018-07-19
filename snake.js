@@ -32,6 +32,9 @@ function GameSnake() {
     )
 
     this.score = 0
+    this.userName = ''
+    this.rankingArray = []
+    this.newRankingArray
 
     this.init()
 }
@@ -190,8 +193,33 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 }
 
 GameSnake.prototype.endGame = function () {
-    // window.location = ''
-    // alert('GAME OVER\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!')
+    window.location = ''
+    this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
+
+    this.createUserObject(this.userName)
+}
+
+GameSnake.prototype.createUserObject = function (userName) {
+    if(userName){
+    const userObject = [{
+        userName: userName,
+        score: this.score
+    }]
+
+
+    const localArray = JSON.parse(localStorage.getItem('rankingArray'))
+
+    this.newRankingArray = localArray.concat(userObject)
+
+    localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))}
+
+    return
+}
+
+GameSnake.prototype.showRankingArray = function (){
+    //do każdego elementu dodać ul + li i potem innerhtml do contanera z rankingiem
+    this.newRankingArray 
+
 }
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
