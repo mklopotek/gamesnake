@@ -218,8 +218,35 @@ GameSnake.prototype.createUserObject = function (userName) {
 
 GameSnake.prototype.showRankingArray = function (){
     //do każdego elementu dodać ul + li i potem innerhtml do contanera z rankingiem
-    this.newRankingArray 
+    let wezel = document.createElement('ul')
 
+    
+    this.newRankingArray.forEach((el, i, arr)=>{
+        let maxScore = el.score
+
+        for(let i = 0; i < arr.length; i++){
+            if(el.score > arr[i+1].score){
+                
+            } else {
+                maxScore = arr[i+1].score
+            }
+        }
+
+    })
+
+    
+    //wybrać element z największym scorem, wyrzucić go z tablicy 
+
+
+    this.newRankingArray.forEach((el, i, arr) => {
+        let wezel2 = document.createElement('li')
+        let wezelTekstowy = `${i + 1 }. ${el.userName} with the score: ${el.score}`
+        wezel2.innerText = wezelTekstowy
+        wezel.appendChild(wezel2)
+
+    })
+
+    
 }
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
