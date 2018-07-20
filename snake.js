@@ -33,8 +33,7 @@ function GameSnake() {
 
     this.score = 0
     this.userName = ''
-    this.rankingArray = []
-    this.newRankingArray
+    this.newRankingArray = null
 
     this.init()
 }
@@ -74,8 +73,8 @@ GameSnake.prototype.prepareLayout = function () {
         return scoreContainer
     }
 
-    function makeRankingContainer(){
-        rankingContainer = document.createElement('div')   
+    function makeRankingContainer() {
+        rankingContainer = document.createElement('div')
         rankingContainer.classList.add('ranking')
 
         return rankingContainer
@@ -128,10 +127,10 @@ GameSnake.prototype.makeCell = function (element, whatColumn, whatRow) {
     const makeCellBodySnake = makeGameElement('snake-body')
     const makeCellFood = makeGameElement('food')
 
-    if(this.snakeBody[0].whatRow === whatRow &&
-        this.snakeBody[0].whatColumn === whatColumn){
-            return makeCellHeadSnake()
-        }
+    if (this.snakeBody[0].whatRow === whatRow &&
+        this.snakeBody[0].whatColumn === whatColumn) {
+        return makeCellHeadSnake()
+    }
 
     switch (element) {
         case 1:
@@ -180,7 +179,7 @@ GameSnake.prototype.eventListeners = function () {
 }
 
 GameSnake.prototype.checkIfMovieIsPossible = function (deltaRow, deltaColumn) {
-    if(this.area[this.snakeBody[0].whatRow + deltaRow] && this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn]){
+    if (this.area[this.snakeBody[0].whatRow + deltaRow] && this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn]) {
         this.move(deltaRow, deltaColumn)
     } else {
         this.endGame()
@@ -195,65 +194,80 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 GameSnake.prototype.endGame = function () {
     window.location = ''
     this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
-
     this.createUserObject(this.userName)
 }
 
 GameSnake.prototype.createUserObject = function (userName) {
-    if(userName){
-    const userObject = [{
+    const userObject = {
         userName: userName,
         score: this.score
-    }]
+    }
 
-
-    const localArray = JSON.parse(localStorage.getItem('rankingArray'))
+    const localArray = JSON.parse(localStorage.getItem('rankingArray')) || []
 
     this.newRankingArray = localArray.concat(userObject)
+    localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))
 
-    localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))}
+    this.sortRankingArray()
 
-    return
 }
 
-GameSnake.prototype.showRankingArray = function (){
+GameSnake.prototype.sortRankingArray = function () {
     //do każdego elementu dodać ul + li i potem innerhtml do contanera z rankingiem
-    let wezel = document.createElement('ul')
 
-    
-    this.newRankingArray.forEach((el, i, arr)=>{
-        let maxScore = el.score
+    // var helperArray = this.newRankingArray.map((el, i, arr) => {
+    //     return el.score
+    // })
 
-        for(let i = 0; i < arr.length; i++){
-            if(el.score > arr[i+1].score){
-                
-            } else {
-                maxScore = arr[i+1].score
-            }
-        }
+    // var forScoreArray = []
 
-    })
+    // helperArray.forEach((el, i, arr)=>{
 
-    
+    //     for(let i = 0; i < arr.length; i++){
+    //         if(el.score > arr[i+1].score){
+    //             i === arr.length? forScoreArray.unshift(el)
+    //         }  
+
+    //         break
+    //     }
+    // })
+
+    // console.log(helperArray)
+
+
+    // let wezel = document.createElement('ul')
+
+
+    // this.newRankingArray.forEach((el, i, arr) => {
+    //     let maxScore = el.score
+
+    //     for (let i = 0; i < arr.length; i++) {
+    //         if (el.score > arr[i + 1].score) {
+
+    //         } else {
+    //             maxScore = arr[i + 1].score
+    //         }
+    //     }
+
+    // })
+
+
     //wybrać element z największym scorem, wyrzucić go z tablicy 
 
 
-    this.newRankingArray.forEach((el, i, arr) => {
-        let wezel2 = document.createElement('li')
-        let wezelTekstowy = `${i + 1 }. ${el.userName} with the score: ${el.score}`
-        wezel2.innerText = wezelTekstowy
-        wezel.appendChild(wezel2)
+//     this.newRankingArray.forEach((el, i, arr) => {
+//         let wezel2 = document.createElement('li')
+//         let wezelTekstowy = `${i + 1}. ${el.userName} with the score: ${el.score}`
+//         wezel2.innerText = wezelTekstowy
+//         wezel.appendChild(wezel2)
 
-    })
-
-    
+//     })
 }
 
-GameSnake.prototype.move = function (deltaRow, deltaColumn) { 
+GameSnake.prototype.move = function (deltaRow, deltaColumn) {
 
-    if(this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] !== 
-        this.area[this.positionFood.whatRow][this.positionFood.whatColumn])
-    {
+    if (this.area[this.snakeBody[0].whatRow + deltaRow][this.snakeBody[0].whatColumn + deltaColumn] !==
+        this.area[this.positionFood.whatRow][this.positionFood.whatColumn]) {
         this.createNewSnakeBody(deltaRow, deltaColumn)
 
     } else {
@@ -269,7 +283,8 @@ GameSnake.prototype.createNewSnakeBody = function (deltaRow, deltaColumn) {
 
     var newSnakeHead = [{
         whatRow: this.snakeBody[0].whatRow + deltaRow,
-        whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
+        whatColumn: this.snakeBody[0].whatColumn + deltaColumn
+    }]
 
     var snakeBodyWithouLastElement = this.snakeBody.slice(0, -1)
     var newSnakeBody = newSnakeHead.concat(snakeBodyWithouLastElement)
@@ -281,10 +296,11 @@ GameSnake.prototype.createNewSnakeBodyWithGrow = function (deltaRow, deltaColumn
 
     var newSnakeHead = [{
         whatRow: this.snakeBody[0].whatRow + deltaRow,
-        whatColumn: this.snakeBody[0].whatColumn + deltaColumn }]
+        whatColumn: this.snakeBody[0].whatColumn + deltaColumn
+    }]
 
     var newSnakeBody = newSnakeHead.concat(this.snakeBody)
-    
+
     this.snakeBody = newSnakeBody
 }
 
@@ -314,30 +330,6 @@ GameSnake.prototype.displayScore = function (score) {
     this.scoreContainer.innerHTML = 'Your curent score is: ' + this.score
 }
 
-// GameSnake.prototype.createPrompt = function (){
-
-//     function makeRankingContainer(){
-//         rankingContainer = document.createElement('div')
-        
-//         rankingContainer.classList.add('ranking')
-
-//         return rankingContainer
-//     }
-
-
-
-
-// }
-
-
-
-
-
-
-
-
-
-
 
 const game1 = new GameSnake()
 
@@ -353,6 +345,6 @@ const game1 = new GameSnake()
 
 //         bottomTop > 0? document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_bottom")' : 
 //         document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_top")' 
-    
+
 //     }
 // } 
