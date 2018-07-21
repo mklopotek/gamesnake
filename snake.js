@@ -28,12 +28,14 @@ function GameSnake() {
     this.theLastMove = this.initialPosition(-1, 0)
     this.mainIntervalId = setInterval(
         () => this.checkIfMovieIsPossible(this.theLastMove.whatRow, this.theLastMove.whatColumn),
-        500
+        10000
     )
 
     this.score = 0
     this.userName = ''
     this.newRankingArray = null
+
+    this.localArray = JSON.parse(localStorage.getItem('rankingArray')) || []
 
     this.init()
 }
@@ -51,6 +53,8 @@ GameSnake.prototype.init = function () {
     this.displayScore(this.score)
     this.render()
     this.eventListeners()
+    this.putRankingArrayToRankingContainer()
+
 
     // alert('Press "ok" to start!')
 
@@ -64,7 +68,6 @@ GameSnake.prototype.prepareLayout = function () {
 
         return gameContainer
     }
-
 
     function makeScoreContainer() {
         scoreContainer = document.createElement('div')
@@ -192,7 +195,7 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 }
 
 GameSnake.prototype.endGame = function () {
-    window.location = ''
+    // window.location = ''
     this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
     this.createUserObject(this.userName)
 }
@@ -203,65 +206,28 @@ GameSnake.prototype.createUserObject = function (userName) {
         score: this.score
     }
 
-    const localArray = JSON.parse(localStorage.getItem('rankingArray')) || []
-
-    this.newRankingArray = localArray.concat(userObject)
+    this.newRankingArray = this.localArray.concat(userObject).sort((a, b) => +a.score < +b.score)
     localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))
-
-    this.sortRankingArray()
-
 }
 
-GameSnake.prototype.sortRankingArray = function () {
-    //do każdego elementu dodać ul + li i potem innerhtml do contanera z rankingiem
 
-    // var helperArray = this.newRankingArray.map((el, i, arr) => {
-    //     return el.score
-    // })
+GameSnake.prototype.putRankingArrayToRankingContainer = function () {
+    let nodeDiv = document.createElement('h1')
+    nodeDiv.innerHTML = `Score Ranking -Ten the best players:`
+    let nodeLi
+    let nodeTextLi
 
-    // var forScoreArray = []
+    let nodeUl = document.createElement('ul')
+    this.localArray.filter((el, i ) => i < 10).forEach((el, i, arr) => {
+        el.userName === null && (el.userName = 'Anonim')
+        nodeLi = document.createElement('li')
+        nodeTextLi = `${i + 1}. <strong>${el.userName}</strong> with the score: <strong>${el.score}</strong>`
+        nodeLi.innerHTML = nodeTextLi
+        nodeUl.appendChild(nodeLi)
+    })
 
-    // helperArray.forEach((el, i, arr)=>{
-
-    //     for(let i = 0; i < arr.length; i++){
-    //         if(el.score > arr[i+1].score){
-    //             i === arr.length? forScoreArray.unshift(el)
-    //         }  
-
-    //         break
-    //     }
-    // })
-
-    // console.log(helperArray)
-
-
-    // let wezel = document.createElement('ul')
-
-
-    // this.newRankingArray.forEach((el, i, arr) => {
-    //     let maxScore = el.score
-
-    //     for (let i = 0; i < arr.length; i++) {
-    //         if (el.score > arr[i + 1].score) {
-
-    //         } else {
-    //             maxScore = arr[i + 1].score
-    //         }
-    //     }
-
-    // })
-
-
-    //wybrać element z największym scorem, wyrzucić go z tablicy 
-
-
-//     this.newRankingArray.forEach((el, i, arr) => {
-//         let wezel2 = document.createElement('li')
-//         let wezelTekstowy = `${i + 1}. ${el.userName} with the score: ${el.score}`
-//         wezel2.innerText = wezelTekstowy
-//         wezel.appendChild(wezel2)
-
-//     })
+    this.rankingContainer.appendChild(nodeDiv)
+    this.rankingContainer.appendChild(nodeUl)
 }
 
 GameSnake.prototype.move = function (deltaRow, deltaColumn) {
@@ -334,17 +300,3 @@ GameSnake.prototype.displayScore = function (score) {
 const game1 = new GameSnake()
 
 // // })()
-
-
-// GameSnake.prototype.roundPicture = function (bottomTop, rightLeft){
-
-//     if (bottomTop === 0){
-//         rightLeft > 0? document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_right")' : 
-//         document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_left")' 
-//     } else {
-
-//         bottomTop > 0? document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_bottom")' : 
-//         document.querySelector('.game__cell--snake-head').style.backgroundImage = 'url("./penguin_top")' 
-
-//     }
-// } 
