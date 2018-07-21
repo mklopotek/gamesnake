@@ -1,9 +1,12 @@
+.body{
+display: flex;
+}
 
-.game__row{
+.game__row {
     margin: 0;
     padding: 0;
 
-    height: 30px;;
+    height: 30px;
 
 }
 
@@ -37,4 +40,28 @@
 .game__cell--food{
     background-color:rgb(148, 232, 235);
     background-image: url('./octopus.png')
+}
+
+.alert {
+    position: absolute;
+    left: 200px;
+    right: 200px;
+    top: 200px;
+    bottom: 200px;
+    width: 50vw;
+    height: 50vh;
+    background: red;
+}
+/* 
+.alert-active{
+    visibility: visible
+} */
+
+.score{
+    width: 100%;
+}
+
+.game, 
+.ranking {
+    width: 40%;
 }

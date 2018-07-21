@@ -8,6 +8,7 @@ function GameSnake() {
     this.gameContainer = null
     this.scoreContainer = null
     this.rankingContainer = null
+    this.alertContainer = null
 
     this.initialArea = this.createEmptyArea(this.areaRowsLengthX, this.areaColumnsLengthY)
     this.area = JSON.parse(JSON.stringify(this.initialArea))
@@ -28,7 +29,7 @@ function GameSnake() {
     this.theLastMove = this.initialPosition(-1, 0)
     this.mainIntervalId = setInterval(
         () => this.checkIfMovieIsPossible(this.theLastMove.whatRow, this.theLastMove.whatColumn),
-        10000
+        1000
     )
 
     this.score = 0
@@ -55,9 +56,7 @@ GameSnake.prototype.init = function () {
     this.eventListeners()
     this.putRankingArrayToRankingContainer()
 
-
     // alert('Press "ok" to start!')
-
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -86,9 +85,11 @@ GameSnake.prototype.prepareLayout = function () {
     this.gameContainer = makeGameContainer()
     this.scoreContainer = makeScoreContainer()
     this.rankingContainer = makeRankingContainer()
+    this.alertContainer = document.createElement('div')
     this.container.appendChild(this.scoreContainer)
     this.container.appendChild(this.gameContainer)
     this.container.appendChild(this.rankingContainer)
+    this.container.appendChild(this.alertContainer)
 }
 
 GameSnake.prototype.render = function () {
@@ -195,9 +196,34 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 }
 
 GameSnake.prototype.endGame = function () {
+    clearInterval(this.mainIntervalId)
     // window.location = ''
-    this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
+    // this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
+    this.alertEnd()
+
+    //changed prompt to alertEnd() and give alertEnd class "active" with visibility: visi...
+
     this.createUserObject(this.userName)
+}
+
+GameSnake.prototype.alertEnd = function () {
+    this.alertContainer.classList.add('alert')
+    let input = document.createElement('input')
+    input.setAttribute('id', 'playerName')
+    input.setAttribute('type', 'text')
+    input.setAttribute('value', 'Anonim')
+    input.setAttribute('placeholder', 'Player Name')
+    let button = document.createElement('button')
+    button.innerHTML = 'Save your score!'
+    this.alertContainer.appendChild(input)
+    this.alertContainer.appendChild(button)
+
+    button.addEventListener('click', () => {
+    let value = this.alertContainer.querySelector('#playerName')['value']
+    this.createUserObject(value)
+    })
+
+
 }
 
 GameSnake.prototype.createUserObject = function (userName) {
@@ -209,7 +235,6 @@ GameSnake.prototype.createUserObject = function (userName) {
     this.newRankingArray = this.localArray.concat(userObject).sort((a, b) => +a.score < +b.score)
     localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))
 }
-
 
 GameSnake.prototype.putRankingArrayToRankingContainer = function () {
     let nodeDiv = document.createElement('h1')
