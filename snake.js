@@ -55,8 +55,6 @@ GameSnake.prototype.init = function () {
     this.displayScore(this.score)
     this.render()
     this.eventListeners()
-    this.putRankingArrayToRankingContainer()
-
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -162,23 +160,26 @@ GameSnake.prototype.addFoodToArea = function () {
 GameSnake.prototype.eventListeners = function () {
 
     this.container.addEventListener('keydown', event => {
-        event.preventDefault()
 
         switch (event.key) {
             case 'ArrowLeft':
                 this.rememberTheLastMove(0, -1)
+                event.preventDefault()
                 break
 
             case 'ArrowUp':
                 this.rememberTheLastMove(-1, 0)
+                event.preventDefault()
                 break
 
             case 'ArrowRight':
                 this.rememberTheLastMove(0, 1)
+                event.preventDefault()
                 break
 
             case 'ArrowDown':
                 this.rememberTheLastMove(1, 0)
+                event.preventDefault()
                 break
         }
     })
@@ -201,7 +202,6 @@ GameSnake.prototype.endGame = function () {
     clearInterval(this.mainIntervalId)
 
     this.alertEnd()
-    this.createUserObject(this.userName)
     this.restartContainerMaker()
 }
 
@@ -225,10 +225,10 @@ GameSnake.prototype.alertEnd = function () {
     this.alertContainer.appendChild(button)
 
     button.addEventListener('click', () => {
-    let value = this.alertContainer.querySelector('#playerName')['value']
-    this.createUserObject(value)
+        let value = this.alertContainer.querySelector('#playerName')['value']
+        this.createUserObject(value)
 
-    this.alertContainer.classList.add('alert__inactive')
+        this.alertContainer.classList.add('alert__inactive')
     })
 }
 
@@ -241,7 +241,7 @@ GameSnake.prototype.restartContainerMaker = function () {
     let button = document.createElement('button')
     button.innerHTML = 'Restart the game!'
 
-    
+
     this.restartContainer.appendChild(div)
     this.restartContainer.appendChild(button)
 
@@ -250,16 +250,20 @@ GameSnake.prototype.restartContainerMaker = function () {
     })
 }
 
-
-
 GameSnake.prototype.createUserObject = function (userName) {
     const userObject = {
         userName: userName,
         score: this.score
     }
 
-    this.newRankingArray = this.localArray.concat(userObject).sort((a, b) => +a.score < +b.score)
+    this.newRankingArray = this.localArray
+        .concat(userObject)
+        .sort((a, b) => a.score > b.score)
+        .reverse()
+
     localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))
+
+    this.putRankingArrayToRankingContainer()
 }
 
 GameSnake.prototype.putRankingArrayToRankingContainer = function () {
@@ -269,13 +273,15 @@ GameSnake.prototype.putRankingArrayToRankingContainer = function () {
     let nodeTextLi
 
     let nodeUl = document.createElement('ul')
-    this.localArray.filter((el, i ) => i < 10).forEach((el, i, arr) => {
-        el.userName === null && (el.userName = 'Anonim')
-        nodeLi = document.createElement('li')
-        nodeTextLi = `${i + 1}. <strong>${el.userName}</strong> with the score: <strong>${el.score}</strong>`
-        nodeLi.innerHTML = nodeTextLi
-        nodeUl.appendChild(nodeLi)
-    })
+    this.newRankingArray
+        .filter((el, i) => i < 10)
+        .forEach((el, i, arr) => {
+            el.userName === null && (el.userName = 'Anonim')
+            nodeLi = document.createElement('li')
+            nodeTextLi = `${i + 1}. <strong>${el.userName}</strong> with the score: <strong>${el.score}</strong>`
+            nodeLi.innerHTML = nodeTextLi
+            nodeUl.appendChild(nodeLi)
+        })
 
     this.rankingContainer.appendChild(nodeDiv)
     this.rankingContainer.appendChild(nodeUl)
