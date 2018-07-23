@@ -9,6 +9,7 @@ function GameSnake() {
     this.scoreContainer = null
     this.rankingContainer = null
     this.alertContainer = null
+    this.restartContainer = null
 
     this.initialArea = this.createEmptyArea(this.areaRowsLengthX, this.areaColumnsLengthY)
     this.area = JSON.parse(JSON.stringify(this.initialArea))
@@ -56,7 +57,6 @@ GameSnake.prototype.init = function () {
     this.eventListeners()
     this.putRankingArrayToRankingContainer()
 
-    // alert('Press "ok" to start!')
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -86,10 +86,12 @@ GameSnake.prototype.prepareLayout = function () {
     this.scoreContainer = makeScoreContainer()
     this.rankingContainer = makeRankingContainer()
     this.alertContainer = document.createElement('div')
+    this.restartContainer = document.createElement('div')
     this.container.appendChild(this.scoreContainer)
     this.container.appendChild(this.gameContainer)
     this.container.appendChild(this.rankingContainer)
     this.container.appendChild(this.alertContainer)
+    this.container.appendChild(this.restartContainer)
 }
 
 GameSnake.prototype.render = function () {
@@ -197,34 +199,58 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 
 GameSnake.prototype.endGame = function () {
     clearInterval(this.mainIntervalId)
-    // window.location = ''
-    // this.userName = prompt('GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: ')
+
     this.alertEnd()
-
-    //changed prompt to alertEnd() and give alertEnd class "active" with visibility: visi...
-
     this.createUserObject(this.userName)
+    this.restartContainerMaker()
 }
 
 GameSnake.prototype.alertEnd = function () {
     this.alertContainer.classList.add('alert')
+
+    let div = document.createElement('div')
+    div.innerHTML = 'GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: '
+
     let input = document.createElement('input')
     input.setAttribute('id', 'playerName')
     input.setAttribute('type', 'text')
     input.setAttribute('value', 'Anonim')
     input.setAttribute('placeholder', 'Player Name')
+
     let button = document.createElement('button')
     button.innerHTML = 'Save your score!'
+
+    this.alertContainer.appendChild(div)
     this.alertContainer.appendChild(input)
     this.alertContainer.appendChild(button)
 
     button.addEventListener('click', () => {
     let value = this.alertContainer.querySelector('#playerName')['value']
     this.createUserObject(value)
+
+    this.alertContainer.classList.add('alert__inactive')
     })
-
-
 }
+
+GameSnake.prototype.restartContainerMaker = function () {
+    // this.restartContainer = document.createElement('div')
+    this.restartContainer.classList.add('restart')
+
+    let div = document.createElement('div')
+
+    let button = document.createElement('button')
+    button.innerHTML = 'Restart the game!'
+
+    
+    this.restartContainer.appendChild(div)
+    this.restartContainer.appendChild(button)
+
+    button.addEventListener('click', () => {
+        window.location = ''
+    })
+}
+
+
 
 GameSnake.prototype.createUserObject = function (userName) {
     const userObject = {
