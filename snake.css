@@ -24,21 +24,20 @@ display: flex;
 
 
 .game__cell--empty{
-    background-color: rgb(148, 232, 235);
-    background-image: url('./wave.png')
+    background-color: rgba(35, 38, 180, 0.397);
 }
 
 .game__cell--snake-head{
-    background-color:darkorchid
+   background-color: rgba(255, 0, 212, 0.664);
 }
 
 .game__cell--snake-body{
-    background-color:deeppink;
+    background-color: #e84393;
 }
 
 
 .game__cell--food{
-    background-color:rgb(148, 232, 235);
+    background-color: rgba(35, 38, 180, 0.397);
     background-image: url('./octopus.png')
 }
 
@@ -49,9 +48,34 @@ display: flex;
     top: 200px;
     bottom: 200px;
     width: 50vw;
-    height: 50vh;
-    background: red;
+    height: 40vh;
+    background: rgb(248, 178, 248);
+    border: black 2px solid;
 }
+
+.alert > div {
+    position: relative;
+    top: 50px;
+    left: 175px;
+    right: 100px;
+}
+
+.alert div:last-of-type {
+    top: 75px;
+    color:rgb(36, 37, 117);
+}
+
+.alert > button, 
+.alert > input {
+    position: relative;
+    top: 100px;
+    left: 125px;
+    width: 15vw;
+    color:rgb(36, 37, 117);
+
+}
+
+
 
 .score{
     width: 100%;

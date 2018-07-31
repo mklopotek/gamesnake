@@ -30,7 +30,7 @@ function GameSnake() {
     this.theLastMove = this.initialPosition(-1, 0)
     this.mainIntervalId = setInterval(
         () => this.checkIfMovieIsPossible(this.theLastMove.whatRow, this.theLastMove.whatColumn),
-        1000
+        500
     )
 
     this.score = 0
@@ -200,6 +200,7 @@ GameSnake.prototype.rememberTheLastMove = function (whatRow, whatColumn) {
 
 GameSnake.prototype.endGame = function () {
     clearInterval(this.mainIntervalId)
+    clearInterval(this.mainIntervalId2)
 
     this.alertEnd()
     this.restartContainerMaker()
@@ -208,19 +209,29 @@ GameSnake.prototype.endGame = function () {
 GameSnake.prototype.alertEnd = function () {
     this.alertContainer.classList.add('alert')
 
-    let div = document.createElement('div')
-    div.innerHTML = 'GAME OVER :(\n' + 'You completed the game with: ' + this.score + ' points!' + '\n Congratulations!' + '\n\n Please leave you name here: '
+    let div1 = document.createElement('div')
+    let div2 = document.createElement('div')
+    let div3 = document.createElement('div')
+    let div4 = document.createElement('div')
+    div1.innerHTML = `<strong>GAME OVER</strong>`
+    div2.innerHTML = `You completed the game with: <strong>${this.score}</strong> points!`
+    div3.innerHTML = `Congratulations!`
+    div4.innerHTML = `Please leave you name here:`
 
     let input = document.createElement('input')
     input.setAttribute('id', 'playerName')
     input.setAttribute('type', 'text')
     input.setAttribute('value', 'Anonim')
     input.setAttribute('placeholder', 'Player Name')
+    input.setAttribute('required', 'required')
 
     let button = document.createElement('button')
-    button.innerHTML = 'Save your score!'
+    button.innerHTML = `<strong>Save your score!</strong>`
 
-    this.alertContainer.appendChild(div)
+    this.alertContainer.appendChild(div1)
+    this.alertContainer.appendChild(div2)
+    this.alertContainer.appendChild(div3)
+    this.alertContainer.appendChild(div4)
     this.alertContainer.appendChild(input)
     this.alertContainer.appendChild(button)
 
@@ -239,7 +250,7 @@ GameSnake.prototype.restartContainerMaker = function () {
     let div = document.createElement('div')
 
     let button = document.createElement('button')
-    button.innerHTML = 'Restart the game!'
+    button.innerHTML = '<strong>Restart the game!</strong>'
 
 
     this.restartContainer.appendChild(div)
@@ -350,7 +361,7 @@ GameSnake.prototype.incScore = function () {
 
 GameSnake.prototype.displayScore = function (score) {
     this.score = score || this.score
-    this.scoreContainer.innerHTML = 'Your curent score is: ' + this.score
+    this.scoreContainer.innerHTML = '<strong>Your curent score is: ' + this.score + '</stong>'
 }
 
 
