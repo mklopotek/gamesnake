@@ -10,6 +10,7 @@ function GameSnake() {
     this.rankingContainer = null
     this.alertContainer = null
     this.restartContainer = null
+    this.buttonContainer = null
 
     this.initialArea = this.createEmptyArea(this.areaRowsLengthX, this.areaColumnsLengthY)
     this.area = JSON.parse(JSON.stringify(this.initialArea))
@@ -55,6 +56,7 @@ GameSnake.prototype.init = function () {
     this.displayScore(this.score)
     this.render()
     this.eventListeners()
+    this.eventListenersButtons()
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -80,16 +82,43 @@ GameSnake.prototype.prepareLayout = function () {
         return rankingContainer
     }
 
+    function makeButtonContainer() {
+        buttonContainer = document.createElement('div')
+        buttonContainer.classList.add('button')
+
+        const buttonLeft = document.createElement('button')
+        buttonLeft.classList.add('button__Left')
+        buttonLeft.innerText = 'Left'
+        const buttonUp = document.createElement('button')
+        buttonUp.classList.add('button__Up')
+        buttonUp.innerText = 'Up'
+        const buttonRight = document.createElement('button')
+        buttonRight.classList.add('button__Right')
+        buttonRight.innerText = 'Right'
+        const buttonDown = document.createElement('button')
+        buttonDown.classList.add('button__Down')
+        buttonDown.innerText = 'Down'
+
+        buttonContainer.appendChild(buttonLeft)
+        buttonContainer.appendChild(buttonUp)
+        buttonContainer.appendChild(buttonRight)
+        buttonContainer.appendChild(buttonDown)
+    
+        return buttonContainer
+    }
+
     this.gameContainer = makeGameContainer()
     this.scoreContainer = makeScoreContainer()
     this.rankingContainer = makeRankingContainer()
     this.alertContainer = document.createElement('div')
     this.restartContainer = document.createElement('div')
+    this.buttonContainer = makeButtonContainer()
     this.container.appendChild(this.scoreContainer)
     this.container.appendChild(this.gameContainer)
-    this.container.appendChild(this.rankingContainer)
     this.container.appendChild(this.alertContainer)
+    this.container.appendChild(this.buttonContainer)
     this.container.appendChild(this.restartContainer)
+    this.container.appendChild(this.rankingContainer)
 }
 
 GameSnake.prototype.render = function () {
@@ -155,6 +184,24 @@ GameSnake.prototype.addSnakeToArea = function () {
 
 GameSnake.prototype.addFoodToArea = function () {
     this.area[this.positionFood.whatRow][this.positionFood.whatColumn] = true
+}
+
+GameSnake.prototype.eventListenersButtons = function () {
+    
+        this.buttonContainer.querySelector('.button__Left').addEventListener('click', () => 
+            this.rememberTheLastMove(0, -1) ) 
+
+        this.buttonContainer.querySelector('.button__Up').addEventListener('click', () => 
+            this.rememberTheLastMove(-1, 0) 
+        )
+
+        this.buttonContainer.querySelector('.button__Right').addEventListener('click', () => 
+            this.rememberTheLastMove(0, 1)
+        )
+
+        this.buttonContainer.querySelector('.button__Down').addEventListener('click', () => 
+            this.rememberTheLastMove(1, 0)
+        )
 }
 
 GameSnake.prototype.eventListeners = function () {
@@ -250,6 +297,7 @@ GameSnake.prototype.restartContainerMaker = function () {
     let div = document.createElement('div')
 
     let button = document.createElement('button')
+    button.classList.add('button__restart')
     button.innerHTML = '<strong>Restart the game!</strong>'
 
 

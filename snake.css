@@ -75,7 +75,11 @@ display: flex;
 
 }
 
-
+.button__restart{
+    position: relative;
+    margin: 20px;
+    left: 30px;
+}
 
 .score{
     width: 100%;
@@ -88,4 +92,40 @@ display: flex;
 
 .alert__inactive {
     visibility: hidden;
+}
+
+.button {
+    display: grid;
+    width: 15vw;
+    grid-gap: 10px;
+    grid-template-columns: auto auto auto;
+    margin: 20px;
+}
+
+.button__Left{
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
+
+.button__Up{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 1;
+}
+
+.button__Right{
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
+
+.button__Down{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 3;
 }
