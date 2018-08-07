@@ -38,9 +38,43 @@ function GameSnake() {
     this.userName = ''
     this.newRankingArray = null
 
-    this.localArray = JSON.parse(localStorage.getItem('rankingArray')) || []
+    this.localArray = null
 
     this.init()
+}
+
+GameSnake.prototype.getArrayFirebase = function () {
+    fetch('https://snake-f27a8.firebaseio.com/ranking.json')
+        .then(response => response.json())
+        .then(data => {
+            const firebaseArray = Object.entries(data || [])
+            const firebaseData = firebaseArray.map(
+                item => {
+                    return {
+                        id: item[0],
+                        ...item[1]
+                    }
+                }
+            )
+            this.localArray = firebaseData.sort((a, b) => a.score > b.score).reverse()
+            console.log(this.localArray)
+        })
+}
+
+GameSnake.prototype.putArrayFirebase = function () {
+    const request = {
+        method: 'POST',
+        body: JSON.stringify({
+            userName: this.userName,
+            score: this.score
+        })
+    }
+
+    fetch('https://snake-f27a8.firebaseio.com/ranking.json', request)
+        .then(response => response.json())
+        .then(data => {
+            this.getArrayFirebase()
+        })
 }
 
 GameSnake.prototype.createEmptyArea = function (areaRowsLengthX, areaColumnsLengthY) {
@@ -57,6 +91,7 @@ GameSnake.prototype.init = function () {
     this.render()
     this.eventListeners()
     this.eventListenersButtons()
+    this.getArrayFirebase()
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -103,7 +138,7 @@ GameSnake.prototype.prepareLayout = function () {
         buttonContainer.appendChild(buttonUp)
         buttonContainer.appendChild(buttonRight)
         buttonContainer.appendChild(buttonDown)
-    
+
         return buttonContainer
     }
 
@@ -187,21 +222,21 @@ GameSnake.prototype.addFoodToArea = function () {
 }
 
 GameSnake.prototype.eventListenersButtons = function () {
-    
-        this.buttonContainer.querySelector('.button__Left').addEventListener('click', () => 
-            this.rememberTheLastMove(0, -1) ) 
 
-        this.buttonContainer.querySelector('.button__Up').addEventListener('click', () => 
-            this.rememberTheLastMove(-1, 0) 
-        )
+    this.buttonContainer.querySelector('.button__Left').addEventListener('click', () =>
+        this.rememberTheLastMove(0, -1))
 
-        this.buttonContainer.querySelector('.button__Right').addEventListener('click', () => 
-            this.rememberTheLastMove(0, 1)
-        )
+    this.buttonContainer.querySelector('.button__Up').addEventListener('click', () =>
+        this.rememberTheLastMove(-1, 0)
+    )
 
-        this.buttonContainer.querySelector('.button__Down').addEventListener('click', () => 
-            this.rememberTheLastMove(1, 0)
-        )
+    this.buttonContainer.querySelector('.button__Right').addEventListener('click', () =>
+        this.rememberTheLastMove(0, 1)
+    )
+
+    this.buttonContainer.querySelector('.button__Down').addEventListener('click', () =>
+        this.rememberTheLastMove(1, 0)
+    )
 }
 
 GameSnake.prototype.eventListeners = function () {
@@ -291,7 +326,6 @@ GameSnake.prototype.alertEnd = function () {
 }
 
 GameSnake.prototype.restartContainerMaker = function () {
-    // this.restartContainer = document.createElement('div')
     this.restartContainer.classList.add('restart')
 
     let div = document.createElement('div')
@@ -310,29 +344,19 @@ GameSnake.prototype.restartContainerMaker = function () {
 }
 
 GameSnake.prototype.createUserObject = function (userName) {
-    const userObject = {
-        userName: userName,
-        score: this.score
-    }
-
-    this.newRankingArray = this.localArray
-        .concat(userObject)
-        .sort((a, b) => a.score > b.score)
-        .reverse()
-
-    localStorage.setItem('rankingArray', JSON.stringify(this.newRankingArray))
-
+    this.userName = userName
+    this.putArrayFirebase()
     this.putRankingArrayToRankingContainer()
 }
 
 GameSnake.prototype.putRankingArrayToRankingContainer = function () {
     let nodeDiv = document.createElement('h1')
-    nodeDiv.innerHTML = `Score Ranking -Ten the best players:`
+    nodeDiv.innerHTML = `Firebase Score Ranking -Ten the best players:`
     let nodeLi
     let nodeTextLi
 
     let nodeUl = document.createElement('ul')
-    this.newRankingArray
+    this.localArray
         .filter((el, i) => i < 10)
         .forEach((el, i, arr) => {
             el.userName === null && (el.userName = 'Anonim')
