@@ -1,4 +1,3 @@
-// (function () {
 
 function GameSnake() {
     this.container = document.body
@@ -57,8 +56,7 @@ GameSnake.prototype.getArrayFirebase = function () {
                 }
             )
             this.localArray = firebaseData.sort((a, b) => a.score > b.score).reverse()
-            console.log(this.localArray)
-        })
+        }).then(() => this.putRankingArrayToRankingContainer())
 }
 
 GameSnake.prototype.putArrayFirebase = function () {
@@ -91,7 +89,6 @@ GameSnake.prototype.init = function () {
     this.render()
     this.eventListeners()
     this.eventListenersButtons()
-    this.getArrayFirebase()
 }
 
 GameSnake.prototype.prepareLayout = function () {
@@ -346,7 +343,6 @@ GameSnake.prototype.restartContainerMaker = function () {
 GameSnake.prototype.createUserObject = function (userName) {
     this.userName = userName
     this.putArrayFirebase()
-    this.putRankingArrayToRankingContainer()
 }
 
 GameSnake.prototype.putRankingArrayToRankingContainer = function () {
@@ -436,7 +432,5 @@ GameSnake.prototype.displayScore = function (score) {
     this.scoreContainer.innerHTML = '<strong>Your curent score is: ' + this.score + '</stong>'
 }
 
-
 const game1 = new GameSnake()
 
-// // })()
